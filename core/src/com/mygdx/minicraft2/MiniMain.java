@@ -8,14 +8,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 
 public class MiniMain extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture tiles;
-	TextureRegion up, down, right, left;
-	Animation walk;
+	TextureRegion up, down, right, left, up2, down2, right2, left2;
+	Animation walkLateral, walkLateral2, walkVerticle, walkVerticle2;
 	float x, y, xv, yv, totalTime;
 	int facing = 1;
+
+	TextureRegion walkUp, walkDown, walkRight, walkLeft;
 
 	static final int WIDTH = 18;
 	static final int HEIGHT = 26;
@@ -24,8 +27,6 @@ public class MiniMain extends ApplicationAdapter {
 	static final float MAX_VELOCITY = 100;
 	static final float FRICTION = 0.94f;
 
-
-
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -33,11 +34,16 @@ public class MiniMain extends ApplicationAdapter {
 		TextureRegion[][] grid = TextureRegion.split(tiles, 16, 16);
 		down = grid[6][0];
 		up = grid[6][1];
+		//up2 = up.flip(true, false);
+		up.flip(true, false);
 		right = grid[6][3];
+		right2 = grid[6][2];
 		left = new TextureRegion(right);
+		left2 = new TextureRegion(right2);
 		left.flip(true, false);
-		//walk = new Animation(0.2f, );
-
+		walkLateral = new Animation(0.08f, right, right2);
+		walkLateral2 = new Animation(0.08f, left, left2);
+		//walkVerticle = new Animation(0.2f, );
 	}
 
 	@Override
@@ -117,13 +123,11 @@ public class MiniMain extends ApplicationAdapter {
 			facing = 2;
 		}
 
-
 		x += xv * Gdx.graphics.getDeltaTime();
 		y += yv * Gdx.graphics.getDeltaTime();
 
 		xv = decelerate(xv);
 		yv = decelerate(yv);
-
 	}
 
 	public float decelerate(float velocity) {
