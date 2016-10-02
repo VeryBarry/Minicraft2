@@ -34,8 +34,8 @@ public class MiniMain extends ApplicationAdapter {
 		TextureRegion[][] grid = TextureRegion.split(tiles, 16, 16);
 		down = grid[6][0];
 		up = grid[6][1];
-		//up2 = up.flip(true, false);
 		up.flip(true, false);
+		down.flip(true, false);
 		right = grid[6][3];
 		right2 = grid[6][2];
 		left = new TextureRegion(right);
@@ -58,7 +58,7 @@ public class MiniMain extends ApplicationAdapter {
 		else if (facing == 1) {
 			guyDude = right;
 		}
-		else if (facing == 4){
+		else if(facing == 4){
 			guyDude = down;
 		}
 		else if (facing == 2){
