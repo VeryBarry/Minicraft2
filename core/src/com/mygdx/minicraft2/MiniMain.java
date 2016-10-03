@@ -13,8 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 public class MiniMain extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture tiles;
-	TextureRegion up, down, right, left, up2, down2, right2, left2;
-	Animation walkLateral, walkLateral2, walkVerticle, walkVerticle2;
+	TextureRegion up, down, right, right2, left, left2;
+	Animation moveUp, moveUp2, moveDown, moveDown2, moveRight, moveRight2, moveLeft, moveLeft2;
 	float x, y, xv, yv, totalTime;
 	int facing = 1;
 
@@ -38,12 +38,11 @@ public class MiniMain extends ApplicationAdapter {
 		down.flip(true, false);
 		right = grid[6][3];
 		right2 = grid[6][2];
-		left = new TextureRegion(right);
-		left2 = new TextureRegion(right2);
+		left = new TextureRegion(grid[6][2]);
+		left2 = new TextureRegion(grid[6][3]);
 		left.flip(true, false);
-		walkLateral = new Animation(0.08f, right, right2);
-		walkLateral2 = new Animation(0.08f, left, left2);
-		//walkVerticle = new Animation(0.2f, );
+		//walkRight = new Animation(0.08f, right, right2);
+		//walkLeft = new Animation(0.08f, left, left2);
 	}
 
 	@Override
