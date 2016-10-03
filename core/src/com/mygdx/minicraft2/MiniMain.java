@@ -13,12 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 public class MiniMain extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture tiles;
-	TextureRegion up, down, right, right2, left, left2;
-	Animation moveUp, moveUp2, moveDown, moveDown2, moveRight, moveRight2, moveLeft, moveLeft2;
+	TextureRegion up, up2, down, down2, right, right2, left, left2;
+	Animation moveUp, moveDown, moveRight, moveLeft;
 	float x, y, xv, yv, totalTime;
-	int facing = 1;
-
-	TextureRegion walkUp, walkDown, walkRight, walkLeft;
+	String facing = "down";
 
 	static final int WIDTH = 18;
 	static final int HEIGHT = 26;
@@ -32,36 +30,59 @@ public class MiniMain extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		tiles = new Texture("tiles.png");
 		TextureRegion[][] grid = TextureRegion.split(tiles, 16, 16);
-		down = grid[6][0];
 		up = grid[6][1];
-		up.flip(true, false);
-		down.flip(true, false);
+		up2 = new TextureRegion(grid[6][1]);
+		up2.flip(true, false);
+		down = grid[6][0];
+		down2 = new TextureRegion(grid[6][0]);
+		down2.flip(true, false);
 		right = grid[6][3];
 		right2 = grid[6][2];
-		left = new TextureRegion(grid[6][2]);
-		left2 = new TextureRegion(grid[6][3]);
+		right.flip(true, false);
+		right2.flip(true, false);
+		left = new TextureRegion(right);
+		left2 = new TextureRegion(right2);
 		left.flip(true, false);
-		//walkRight = new Animation(0.08f, right, right2);
-		//walkLeft = new Animation(0.08f, left, left2);
+		left2.flip(true, false);
+		moveRight = new Animation(.2f, left, left2);
+		moveLeft = new Animation(.2f, right, right2);
+		moveUp = new Animation(.2f, up, up2);
+		moveDown = new Animation(.2f, down, down2);
 	}
-
 	@Override
 	public void render () {
 		totalTime += Gdx.graphics.getDeltaTime();
 		move();
 
-		TextureRegion guyDude = right;
-		if (facing == 3) {
-			guyDude = up;
-		}
-		else if (facing == 1) {
-			guyDude = right;
-		}
-		else if(facing == 4){
-			guyDude = down;
-		}
-		else if (facing == 2){
-			guyDude = left;
+		TextureRegion guyDude = new TextureRegion();
+		if(facing.equals("right")){
+			if(xv != 0){
+				guyDude = moveRight.getKeyFrame(totalTime,true);
+			}
+			else {
+				guyDude = right;
+			}
+		} if(facing.equals("left")){
+			if(xv != 0){
+				guyDude = moveLeft.getKeyFrame(totalTime,true);
+			}
+			else {
+				guyDude = left;
+			}
+		} if(facing.equals("up")){
+			if(yv != 0){
+				guyDude = moveUp.getKeyFrame(totalTime,true);
+			}
+			else {
+				guyDude = up;
+			}
+		} if(facing.equals("down")){
+			if(yv != 0){
+				guyDude = moveDown.getKeyFrame(totalTime,true);
+			}
+			else {
+				guyDude = down;
+			}
 		}
 		Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -82,7 +103,6 @@ public class MiniMain extends ApplicationAdapter {
 			x = 0;
 		}
 	}
-
 	@Override
 	public void dispose () {
 		batch.dispose();
@@ -91,35 +111,28 @@ public class MiniMain extends ApplicationAdapter {
 	public void move() {
 		if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 			yv = MAX_VELOCITY * 5;
-			facing = 3;
-		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+			facing = "up";
+		} else if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 			yv = MAX_VELOCITY * 5 * -1;
-			facing = 4;
-		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+			facing = "down";
+		} else if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 			xv = MAX_VELOCITY * 5;
-			facing = 1;
-		}
-		else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+			facing = "right";
+		} else if (Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
 			xv = MAX_VELOCITY * 5 * -1;
-			facing = 2;
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.W)){
+			facing = "left";
+		} else if(Gdx.input.isKeyPressed(Input.Keys.W)){
 			yv = MAX_VELOCITY;
-			facing = 3;
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+			facing = "up";
+		} else if(Gdx.input.isKeyPressed(Input.Keys.S)) {
 			yv = MAX_VELOCITY * -1;
-			facing = 4;
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+			facing = "down";
+		} else if(Gdx.input.isKeyPressed(Input.Keys.D)) {
 			xv = MAX_VELOCITY;
-			facing = 1;
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+			facing = "right";
+		} else if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			xv = MAX_VELOCITY * -1;
-			facing = 2;
+			facing = "left";
 		}
 
 		x += xv * Gdx.graphics.getDeltaTime();
@@ -128,7 +141,6 @@ public class MiniMain extends ApplicationAdapter {
 		xv = decelerate(xv);
 		yv = decelerate(yv);
 	}
-
 	public float decelerate(float velocity) {
 		velocity *= FRICTION;
 		if(Math.abs(velocity) < 80){
